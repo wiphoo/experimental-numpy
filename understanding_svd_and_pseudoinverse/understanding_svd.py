@@ -34,13 +34,16 @@
 #											   |_	     _|
 
 import numpy as np
+np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
 
 #	construct the input array
-a = np.array( [ [ 1, 2, 1 ],
+a = np.array( [ [ 1, 2, 12 ],
 				[ 2, 3, 2 ],
 				[ 1, 2, 1 ],
 			] )
 print( 'a = {}'.format( a ) )
+
+print( ' ===############################################################=== ' )
 			
 # using numpy to find SVD
 print( 'calculating the SVD using numpy......................' )
@@ -52,10 +55,33 @@ d = np.diag( s )
 print( '    u = {}'.format( u ) )
 print( '    s = {}'.format( s ) )
 print( '    vt = {}'.format( vt ) )
-print( '    d= {}'.format( d ) )
+print( '    d = {}'.format( d ) )
 
 #	testing the SVD
 print( 'testing reconstruct A matrix using SVD' )
 reconstructedA = np.dot( u, np.dot( d, vt ) )
 assert( np.allclose( a, reconstructedA ) )
 print( ' === done === ' )
+
+print( ' ===############################################################=== ' )
+
+print( 'testing construct inverse matrix of A using SVD' )
+
+v = vt.transpose()
+inverseD = np.diag( s**-1 )
+ut = u.transpose()
+
+print( '    v = {}'.format( v ) )
+print( '    inverseD = {}'.format( d ) )
+print( '    ut = {}'.format( ut ) )
+
+inverseA = np.dot( v, np.dot( inverseD, ut ) )
+print( '    inverseA = {}'.format( inverseA ) )
+
+aMultiplyInverseA = np.matmul( a, inverseA )
+print( '    aMultiplyInverseA = {}'.format( aMultiplyInverseA ) )
+
+#	check
+assert( np.allclose( aMultiplyInverseA, np.identity( 3 ) ) )
+print( ' === done === ' )
+
